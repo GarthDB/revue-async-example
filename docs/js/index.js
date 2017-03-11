@@ -8244,8 +8244,6 @@ module.exports = Vue$2;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var REQUEST_LIST = exports.REQUEST_LIST = 'REQUEST_LIST';
-var RECEIVE_LIST = exports.RECEIVE_LIST = 'RECEIVE_LIST';
 var SELECT_LIST = exports.SELECT_LIST = 'SELECT_LIST';
 
 var selectList = exports.selectList = function selectList(name) {
@@ -8255,93 +8253,16 @@ var selectList = exports.selectList = function selectList(name) {
   };
 };
 
-var requestList = exports.requestList = function requestList(name) {
-  return {
-    type: REQUEST_LIST,
-    name: name
-  };
-};
-
-var recieveList = exports.recieveList = function recieveList(name, list) {
-  return {
-    type: RECEIVE_LIST,
-    name: name,
-    list: list
-  };
-};
-
-var lists = {
-  one: ['list one item', 'another list one item'],
-  two: ['list two item', 'another list two item']
-};
-
-var fetchList = exports.fetchList = function fetchList(name) {
-  return function (dispatch, getState) {
-    dispatch(requestList(name));
-    setTimeout(function () {
-      dispatch(recieveList(name, lists[name]));
-    }, 2000);
-  };
-};
-
 },{}],29:[function(require,module,exports){
-;(function(){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _store = require('./store');
-
-var _store2 = _interopRequireDefault(_store);
-
-var _actions = require('./actions');
-
-var _picker = require('./picker.vue');
-
-var _picker2 = _interopRequireDefault(_picker);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  name: 'App',
-  data: function data() {
-    return {
-      selectedList: this.$select('selectList'),
-      list: ['tada', 'poop', 'yay!']
-    };
-  },
-
-  computed: {},
-  components: { Picker: _picker2.default }
-};
-})()
-if (module.exports.__esModule) module.exports = module.exports.default
-var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('Picker'),_vm._v(" "),_c('h1',[_vm._v(_vm._s(_vm.selectedList))]),_vm._v(" "),_c('ul',_vm._l((_vm.list),function(item,index){return _c('li',{key:"index"},[_vm._v(_vm._s(item))])}))],1)}
-__vue__options__.staticRenderFns = []
-if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-b4149824", __vue__options__)
-  } else {
-    hotAPI.rerender("data-v-b4149824", __vue__options__)
-  }
-})()}
-},{"./actions":28,"./picker.vue":31,"./store":33,"vue":27,"vue-hot-reload-api":26}],30:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _app = require('./app.vue');
+var _picker = require('./picker.vue');
 
-var _app2 = _interopRequireDefault(_app);
+var _picker2 = _interopRequireDefault(_picker);
 
 var _store = require('./store');
 
@@ -8355,11 +8276,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 new _vue2.default({
   el: '#app',
   render: function render(h) {
-    return h(_app2.default);
+    return h(_picker2.default);
   }
 });
 
-},{"./app.vue":29,"./store":33,"vue":27}],31:[function(require,module,exports){
+},{"./picker.vue":30,"./store":32,"vue":27}],30:[function(require,module,exports){
 ;(function(){
 'use strict';
 
@@ -8376,6 +8297,12 @@ var _actions = require('./actions');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
+  data: function data() {
+    return {
+      selectedList: this.$select('selectList')
+    };
+  },
+
   methods: {
     listSelectHandler: function listSelectHandler(event) {
       _store2.default.dispatch((0, _actions.selectList)(event.target.value));
@@ -8386,7 +8313,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.selected),expression:"selected"}],on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.selected=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.listSelectHandler]}},[_c('option',{attrs:{"value":"one"}},[_vm._v("List 1")]),_vm._v(" "),_c('option',{attrs:{"value":"two"}},[_vm._v("List 2")])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('h1',[_vm._v(_vm._s(_vm.selectedList))]),_vm._v(" "),_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.selected),expression:"selected"}],on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.selected=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.listSelectHandler]}},[_c('option',{attrs:{"value":"one"}},[_vm._v("List 1")]),_vm._v(" "),_c('option',{attrs:{"value":"two"}},[_vm._v("List 2")])])])}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -8395,10 +8322,10 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-654d2c51", __vue__options__)
   } else {
-    hotAPI.reload("data-v-654d2c51", __vue__options__)
+    hotAPI.rerender("data-v-654d2c51", __vue__options__)
   }
 })()}
-},{"./actions":28,"./store":33,"vue":27,"vue-hot-reload-api":26}],32:[function(require,module,exports){
+},{"./actions":28,"./store":32,"vue":27,"vue-hot-reload-api":26}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8409,45 +8336,8 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var lists = function lists() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
-    isFetching: false
-  };
-  var action = arguments[1];
-
-  switch (action.type) {
-    case _actions.REQUEST_LIST:
-      return Object.assign({}, state, {
-        isFetching: true
-      });
-    case _actions.RECEIVE_LIST:
-      return Object.assign({}, state, {
-        isFetching: false,
-        list: action.list,
-        lastUpdated: action.receivedAt
-      });
-    default:
-      return state;
-  }
-};
-
-var listByName = function listByName() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var action = arguments[1];
-
-  switch (action.type) {
-    case _actions.REQUEST_LIST:
-    case _actions.RECEIVE_LIST:
-      return Object.assign({}, state, _defineProperty({}, action.name, lists(state[action.name], action)));
-    default:
-      return state;
-  }
-};
-
 var selectList = function selectList() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'two';
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'one';
   var action = arguments[1];
 
   switch (action.type) {
@@ -8459,13 +8349,12 @@ var selectList = function selectList() {
 };
 
 var rootReducer = (0, _redux.combineReducers)({
-  listByName: listByName,
   selectList: selectList
 });
 
 exports.default = rootReducer;
 
-},{"../actions":28,"redux":20}],33:[function(require,module,exports){
+},{"../actions":28,"redux":20}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8513,4 +8402,4 @@ if (typeof __DEV__ !== 'undefined' && __DEV__) {
 
 exports.default = store;
 
-},{"../actions":28,"../reducers":32,"redux":20,"redux-thunk":14,"revue":22,"vue":27}]},{},[30]);
+},{"../actions":28,"../reducers":31,"redux":20,"redux-thunk":14,"revue":22,"vue":27}]},{},[29]);
