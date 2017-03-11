@@ -1,50 +1,31 @@
-export const REQUEST_POSTS = 'REQUEST_POSTS';
-export const RECEIVE_POSTS = 'RECEIVE_POSTS';
-export const SELECT_REDDIT = 'SELECT_REDDIT';
-export const INVALIDATE_REDDIT = 'INVALIDATE_REDDIT';
+export const REQUEST_LIST = 'REQUEST_LIST';
+export const RECEIVE_LIST = 'RECEIVE_LIST';
+export const SELECT_LIST = 'SELECT_LIST';
 
-export const selectReddit = reddit => ({
-  type: SELECT_REDDIT,
-  reddit,
+export const selectList = name => ({
+  type: SELECT_LIST,
+  name,
 });
 
-export const invalidateReddit = reddit => ({
-  type: INVALIDATE_REDDIT,
-  reddit,
+export const requestList = name => ({
+  type: REQUEST_LIST,
+  name,
 });
 
-export const requestPosts = reddit => ({
-  type: REQUEST_POSTS,
-  reddit,
+export const recieveList = (name, list) => ({
+  type: RECEIVE_LIST,
+  name,
+  list,
 });
 
-export const receivePosts = (reddit, json) => ({
-  type: RECEIVE_POSTS,
-  reddit,
-  posts: json.data.children.map(child => child.data),
-  receivedAt: Date.now(),
-});
-
-const fetchPosts = reddit => dispatch => {
-  dispatch(requestPosts(reddit));
-  return fetch(`https://www.reddit.com/r/${reddit}.json`)
-    .then(response => response.json())
-    .then(json => dispatch(receivePosts(reddit, json)));
+const lists = {
+  one: ['list one item', 'another list one item'],
+  two: ['list two item', 'another list two item'],
 };
 
-const shouldFetchPosts = (state, reddit) => {
-  const posts = state.postsByReddit[reddit];
-  if (!posts) {
-    return true;
-  }
-  if (posts.isFetching) {
-    return false;
-  }
-  return posts.didInvalidate;
-};
-
-export const fetchPostsIfNeeded = reddit => (dispatch, getState) => {
-  if (shouldFetchPosts(getState(), reddit)) {
-    return dispatch(fetchPosts(reddit));
-  }
+export const fetchList = name => (dispatch, getState) => {
+  dispatch(requestList(name));
+  setTimeout(() => {
+    dispatch(recieveList(name, lists[name]));
+  }, 2000);
 };

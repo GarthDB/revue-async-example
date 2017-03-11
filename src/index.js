@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import App from './containers/App.vue';
+import App from './app.vue';
 import store from './store';
-import { fetchPostsIfNeeded } from './actions';
+// import { fetchPostsIfNeeded } from './actions';
 
 // eslint-disable-next-line no-new
 new Vue({

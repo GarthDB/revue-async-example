@@ -8244,70 +8244,43 @@ module.exports = Vue$2;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var REQUEST_POSTS = exports.REQUEST_POSTS = 'REQUEST_POSTS';
-var RECEIVE_POSTS = exports.RECEIVE_POSTS = 'RECEIVE_POSTS';
-var SELECT_REDDIT = exports.SELECT_REDDIT = 'SELECT_REDDIT';
-var INVALIDATE_REDDIT = exports.INVALIDATE_REDDIT = 'INVALIDATE_REDDIT';
+var REQUEST_LIST = exports.REQUEST_LIST = 'REQUEST_LIST';
+var RECEIVE_LIST = exports.RECEIVE_LIST = 'RECEIVE_LIST';
+var SELECT_LIST = exports.SELECT_LIST = 'SELECT_LIST';
 
-var selectReddit = exports.selectReddit = function selectReddit(reddit) {
+var selectList = exports.selectList = function selectList(name) {
   return {
-    type: SELECT_REDDIT,
-    reddit: reddit
+    type: SELECT_LIST,
+    name: name
   };
 };
 
-var invalidateReddit = exports.invalidateReddit = function invalidateReddit(reddit) {
+var requestList = exports.requestList = function requestList(name) {
   return {
-    type: INVALIDATE_REDDIT,
-    reddit: reddit
+    type: REQUEST_LIST,
+    name: name
   };
 };
 
-var requestPosts = exports.requestPosts = function requestPosts(reddit) {
+var recieveList = exports.recieveList = function recieveList(name, list) {
   return {
-    type: REQUEST_POSTS,
-    reddit: reddit
+    type: RECEIVE_LIST,
+    name: name,
+    list: list
   };
 };
 
-var receivePosts = exports.receivePosts = function receivePosts(reddit, json) {
-  return {
-    type: RECEIVE_POSTS,
-    reddit: reddit,
-    posts: json.data.children.map(function (child) {
-      return child.data;
-    }),
-    receivedAt: Date.now()
-  };
+var lists = {
+  one: ['list one item', 'another list one item'],
+  two: ['list two item', 'another list two item']
 };
 
-var fetchPosts = function fetchPosts(reddit) {
-  return function (dispatch) {
-    dispatch(requestPosts(reddit));
-    return fetch('https://www.reddit.com/r/' + reddit + '.json').then(function (response) {
-      return response.json();
-    }).then(function (json) {
-      return dispatch(receivePosts(reddit, json));
-    });
-  };
-};
-
-var shouldFetchPosts = function shouldFetchPosts(state, reddit) {
-  var posts = state.postsByReddit[reddit];
-  if (!posts) {
-    return true;
-  }
-  if (posts.isFetching) {
-    return false;
-  }
-  return posts.didInvalidate;
-};
-
-var fetchPostsIfNeeded = exports.fetchPostsIfNeeded = function fetchPostsIfNeeded(reddit) {
+var fetchList = exports.fetchList = function fetchList(name) {
   return function (dispatch, getState) {
-    if (shouldFetchPosts(getState(), reddit)) {
-      return dispatch(fetchPosts(reddit));
-    }
+    dispatch(requestList(name));
+    setTimeout(function () {
+      dispatch(recieveList(name, lists[name]));
+    }, 2000);
   };
 };
 
@@ -8318,98 +8291,81 @@ var fetchPostsIfNeeded = exports.fetchPostsIfNeeded = function fetchPostsIfNeede
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _store = require('./store');
+
+var _store2 = _interopRequireDefault(_store);
+
+var _actions = require('./actions');
+
+var _picker = require('./picker.vue');
+
+var _picker2 = _interopRequireDefault(_picker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = {
-  props: ['value', 'options', 'onChange'],
-  methods: {
-    selectChange: function selectChange(event) {
-      console.log(event);
-    }
-  }
+  name: 'App',
+  data: function data() {
+    return {
+      selectedList: this.$select('selectList'),
+      list: ['tada', 'poop', 'yay!']
+    };
+  },
+
+  computed: {},
+  components: { Picker: _picker2.default }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('span',[_c('h1',[_vm._v(_vm._s(_vm.value))]),_vm._v(" "),_c('select',{domProps:{"value":_vm.value},on:{"change":_vm.selectChange}},_vm._l((_vm.options),function(option,index){return _c('option',{key:"index"},[_vm._v(_vm._s(option))])}))])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('Picker'),_vm._v(" "),_c('h1',[_vm._v(_vm._s(_vm.selectedList))]),_vm._v(" "),_c('ul',_vm._l((_vm.list),function(item,index){return _c('li',{key:"index"},[_vm._v(_vm._s(item))])}))],1)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-a2eeb858", __vue__options__)
+    hotAPI.createRecord("data-v-b4149824", __vue__options__)
   } else {
-    hotAPI.reload("data-v-a2eeb858", __vue__options__)
+    hotAPI.rerender("data-v-b4149824", __vue__options__)
   }
 })()}
-},{"vue":27,"vue-hot-reload-api":26}],30:[function(require,module,exports){
+},{"./actions":28,"./picker.vue":31,"./store":33,"vue":27,"vue-hot-reload-api":26}],30:[function(require,module,exports){
+'use strict';
+
+var _vue = require('vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _app = require('./app.vue');
+
+var _app2 = _interopRequireDefault(_app);
+
+var _store = require('./store');
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import { fetchPostsIfNeeded } from './actions';
+
+// eslint-disable-next-line no-new
+new _vue2.default({
+  el: '#app',
+  render: function render(h) {
+    return h(_app2.default);
+  }
+});
+
+},{"./app.vue":29,"./store":33,"vue":27}],31:[function(require,module,exports){
 ;(function(){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _vue = require('vue');
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _Picker = require('../components/Picker.vue');
-
-var _Picker2 = _interopRequireDefault(_Picker);
-
-var _store = require('../store');
-
-var _store2 = _interopRequireDefault(_store);
-
-var _actions = require('../actions');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  name: 'App',
-  props: ['posts', 'isFetching', 'dispatch'],
-  data: function data() {
-    var selectedReddit = this.$select('selectedReddit');
-    return {
-      selectedReddit: selectedReddit,
-      redditResults: this.$select('postsByReddit.' + selectedReddit)
-    };
-  },
-
-  mounted: function mounted() {
-    _store2.default.dispatch((0, _actions.fetchPostsIfNeeded)('reactjs'));
-  },
-  components: {
-    Picker: _Picker2.default
-  }
-};
-})()
-if (module.exports.__esModule) module.exports = module.exports.default
-var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('Picker',{attrs:{"value":_vm.selectedReddit,"options":[ 'reactjs', 'frontend' ]}}),_vm._v(" "),_c('p',[(_vm.redditResults && _vm.redditResults.lastUpdated)?_c('span',[_vm._v("Last updated at "+_vm._s(new Date(_vm.redditResults.lastUpdated).toLocaleTimeString()))]):_vm._e(),_vm._v(" "),(_vm.redditResults && !_vm.redditResults.isFetching)?_c('span',[_c('a',{attrs:{"href":"#","onClick":"{this.handleRefreshClick}"}},[_vm._v("\n          Refresh\n        ")])]):_vm._e()])],1)}
-__vue__options__.staticRenderFns = []
-if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-4869af72", __vue__options__)
-  } else {
-    hotAPI.rerender("data-v-4869af72", __vue__options__)
-  }
-})()}
-},{"../actions":28,"../components/Picker.vue":29,"../store":33,"vue":27,"vue-hot-reload-api":26}],31:[function(require,module,exports){
-'use strict';
-
-var _vue = require('vue');
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _App = require('./containers/App.vue');
-
-var _App2 = _interopRequireDefault(_App);
 
 var _store = require('./store');
 
@@ -8419,15 +8375,30 @@ var _actions = require('./actions');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// eslint-disable-next-line no-new
-new _vue2.default({
-  el: '#app',
-  render: function render(h) {
-    return h(_App2.default);
+exports.default = {
+  methods: {
+    listSelectHandler: function listSelectHandler(event) {
+      _store2.default.dispatch((0, _actions.selectList)(event.target.value));
+    }
   }
-});
-
-},{"./actions":28,"./containers/App.vue":30,"./store":33,"vue":27}],32:[function(require,module,exports){
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.selected),expression:"selected"}],on:{"change":[function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.selected=$event.target.multiple ? $$selectedVal : $$selectedVal[0]},_vm.listSelectHandler]}},[_c('option',{attrs:{"value":"one"}},[_vm._v("List 1")]),_vm._v(" "),_c('option',{attrs:{"value":"two"}},[_vm._v("List 2")])])}
+__vue__options__.staticRenderFns = []
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-654d2c51", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-654d2c51", __vue__options__)
+  }
+})()}
+},{"./actions":28,"./store":33,"vue":27,"vue-hot-reload-api":26}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8440,41 +8411,21 @@ var _actions = require('../actions');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var selectedReddit = function selectedReddit() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'reactjs';
-  var action = arguments[1];
-
-  switch (action.type) {
-    case _actions.SELECT_REDDIT:
-      return action.reddit;
-    default:
-      return state;
-  }
-};
-
-var posts = function posts() {
+var lists = function lists() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
-    isFetching: false,
-    didInvalidate: false,
-    items: []
+    isFetching: false
   };
   var action = arguments[1];
 
   switch (action.type) {
-    case _actions.INVALIDATE_REDDIT:
+    case _actions.REQUEST_LIST:
       return Object.assign({}, state, {
-        didInvalidate: true
+        isFetching: true
       });
-    case _actions.REQUEST_POSTS:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false
-      });
-    case _actions.RECEIVE_POSTS:
+    case _actions.RECEIVE_LIST:
       return Object.assign({}, state, {
         isFetching: false,
-        didInvalidate: false,
-        items: action.posts,
+        list: action.list,
         lastUpdated: action.receivedAt
       });
     default:
@@ -8482,23 +8433,34 @@ var posts = function posts() {
   }
 };
 
-var postsByReddit = function postsByReddit() {
+var listByName = function listByName() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
   switch (action.type) {
-    case _actions.INVALIDATE_REDDIT:
-    case _actions.RECEIVE_POSTS:
-    case _actions.REQUEST_POSTS:
-      return Object.assign({}, state, _defineProperty({}, action.reddit, posts(state[action.reddit], action)));
+    case _actions.REQUEST_LIST:
+    case _actions.RECEIVE_LIST:
+      return Object.assign({}, state, _defineProperty({}, action.name, lists(state[action.name], action)));
+    default:
+      return state;
+  }
+};
+
+var selectList = function selectList() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'two';
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.SELECT_LIST:
+      return action.name;
     default:
       return state;
   }
 };
 
 var rootReducer = (0, _redux.combineReducers)({
-  postsByReddit: postsByReddit,
-  selectedReddit: selectedReddit
+  listByName: listByName,
+  selectList: selectList
 });
 
 exports.default = rootReducer;
@@ -8551,4 +8513,4 @@ if (typeof __DEV__ !== 'undefined' && __DEV__) {
 
 exports.default = store;
 
-},{"../actions":28,"../reducers":32,"redux":20,"redux-thunk":14,"revue":22,"vue":27}]},{},[31]);
+},{"../actions":28,"../reducers":32,"redux":20,"redux-thunk":14,"revue":22,"vue":27}]},{},[30]);

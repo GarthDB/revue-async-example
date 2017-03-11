@@ -1,61 +1,53 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
 import {
-  SELECT_REDDIT, INVALIDATE_REDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
-} from '../actions'
+  REQUEST_LIST,
+  RECEIVE_LIST,
+  SELECT_LIST,
+} from '../actions';
 
-const selectedReddit = (state = 'reactjs', action) => {
-  switch (action.type) {
-    case SELECT_REDDIT:
-      return action.reddit
-    default:
-      return state
-  }
-}
-
-const posts = (state = {
+const lists = (state = {
   isFetching: false,
-  didInvalidate: false,
-  items: []
 }, action) => {
   switch (action.type) {
-    case INVALIDATE_REDDIT:
+    case REQUEST_LIST:
       return Object.assign({}, state, {
-          didInvalidate: true
-        });
-    case REQUEST_POSTS:
+        isFetching: true,
+      });
+    case RECEIVE_LIST:
       return Object.assign({}, state, {
-          isFetching: true,
-          didInvalidate: false
-        });
-    case RECEIVE_POSTS:
-      return Object.assign({}, state, {
-          isFetching: false,
-          didInvalidate: false,
-          items: action.posts,
-          lastUpdated: action.receivedAt
-        });
+        isFetching: false,
+        list: action.list,
+        lastUpdated: action.receivedAt,
+      });
     default:
-      return state
+      return state;
   }
-}
+};
 
-const postsByReddit = (state = { }, action) => {
+const listByName = (state = {}, action) => {
   switch (action.type) {
-    case INVALIDATE_REDDIT:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
+    case REQUEST_LIST:
+    case RECEIVE_LIST:
       return Object.assign({}, state, {
-          [action.reddit]: posts(state[action.reddit], action)
-        });
+        [action.name]: lists(state[action.name], action),
+      });
     default:
-      return state
+      return state;
   }
-}
+};
+
+const selectList = (state = 'two', action) => {
+  switch (action.type) {
+    case SELECT_LIST:
+      return action.name;
+    default:
+      return state;
+  }
+};
 
 const rootReducer = combineReducers({
-  postsByReddit,
-  selectedReddit
-})
+  listByName,
+  selectList,
+});
 
-export default rootReducer
+export default rootReducer;
